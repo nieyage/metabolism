@@ -56,6 +56,31 @@ Tcga_Anno$cancer.type<-pandata$cancer.type[match(Tcga_Anno$sample,pandata$sample
 tumor<-Tcga_Anno[which(Tcga_Anno$type=="tumor"),];
 cancer.type<-na.omit(unique(tumor$cancer.type));
 #create a dataframe to store the correalation value 
+> cc.genes
+$s.genes
+ [1] "MCM5"     "PCNA"     "TYMS"     "FEN1"     "MCM2"     "MCM4"    
+ [7] "RRM1"     "UNG"      "GINS2"    "MCM6"     "CDCA7"    "DTL"     
+[13] "PRIM1"    "UHRF1"    "MLF1IP"   "HELLS"    "RFC2"     "RPA2"    
+[19] "NASP"     "RAD51AP1" "GMNN"     "WDR76"    "SLBP"     "CCNE2"   
+[25] "UBR7"     "POLD3"    "MSH2"     "ATAD2"    "RAD51"    "RRM2"    
+[31] "CDC45"    "CDC6"     "EXO1"     "TIPIN"    "DSCC1"    "BLM"     
+[37] "CASP8AP2" "USP1"     "CLSPN"    "POLA1"    "CHAF1B"   "BRIP1"   
+[43] "E2F8"    
+
+$g2m.genes
+ [1] "HMGB2"   "CDK1"    "NUSAP1"  "UBE2C"   "BIRC5"   "TPX2"    "TOP2A"  
+ [8] "NDC80"   "CKS2"    "NUF2"    "CKS1B"   "MKI67"   "TMPO"    "CENPF"  
+[15] "TACC3"   "FAM64A"  "SMC4"    "CCNB2"   "CKAP2L"  "CKAP2"   "AURKB"  
+[22] "BUB1"    "KIF11"   "ANP32E"  "TUBB4B"  "GTSE1"   "KIF20B"  "HJURP"  
+[29] "CDCA3"   "HN1"     "CDC20"   "TTK"     "CDC25C"  "KIF2C"   "RANGAP1"
+[36] "NCAPD2"  "DLGAP5"  "CDCA2"   "CDCA8"   "ECT2"    "KIF23"   "HMMR"   
+[43] "AURKA"   "PSRC1"   "ANLN"    "LBR"     "CKAP5"   "CENPE"   "CTCF"   
+[50] "NEK2"    "G2E3"    "GAS2L3"  "CBX5"    "CENPA"  
+
+
+
+
+
 cor<-matrix(ncol=24,nrow=20500);
 colnames(cor)=cancer.type;
 rownames(cor)=rownames(X)[-which(rownames(X)=="MKI67")]
