@@ -45,17 +45,15 @@ Tcga_Anno<-data.frame(barcode,type="tumor")
 for (i in 1:length(barcode)){
   if (Tcga_Anno[i,]$barcode %in% non_tumor){Tcga_Anno[i,]$type="non_tumor"}
 }
-Tcga_Anno$sample<-NULL
-for (i in 1:length(Tcga_Anno$barcode)){
-	Tcga_Anno$sample[i]<-paste(unlist(strsplit( Tcga_Anno$barcode[i], "-" ))[1],
-		unlist(strsplit( Tcga_Anno$barcode[i], "-" ))[2],
-		unlist(strsplit( Tcga_Anno$barcode[i], "-" ))[3],sep="-")
-}
 
-Tcga_Anno$cancer.type<-pandata$cancer.type[match(Tcga_Anno$sample,pandata$sample)]
-tumor<-Tcga_Anno[which(Tcga_Anno$type=="tumor"),];
-cancer.type<-na.omit(unique(tumor$cancer.type));
+
+
+
+
+
+
 #create a dataframe to store the correalation value 
+library(Seurat)
 > cc.genes
 $s.genes
  [1] "MCM5"     "PCNA"     "TYMS"     "FEN1"     "MCM2"     "MCM4"    
@@ -84,8 +82,8 @@ $g2m.genes
 cor<-matrix(ncol=24,nrow=20500);
 colnames(cor)=cancer.type;
 rownames(cor)=rownames(X)[-which(rownames(X)=="MKI67")]
-#cancer.type[i]
 
+#cancer.type[i]
 for(i in 1:length(cancer.type)){
 	data<-X[,tumor[which(tumor$cancer.type==cancer.type[i]),1]];
 	Ki67<-data["MKI67",]
