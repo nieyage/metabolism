@@ -2,30 +2,21 @@ library(DOSE)
 library(GOSemSim)
 library(clusterProfiler)
 library(org.Hs.eg.db)
-# library(org.Mm.eg.db)
-# library(org.Rn.eg.db)
 library(dplyr)
 library(GO.db)
 get_GO_data <- function(OrgDb, ont, keytype) {
   GO_Env <- get_GO_Env()
   use_cached <- FALSE
-  
   if (exists("organism", envir=GO_Env, inherits=FALSE) &&
       exists("keytype", envir=GO_Env, inherits=FALSE)) {
-    
     org <- get("organism", envir=GO_Env)
     kt <- get("keytype", envir=GO_Env)
-    
     if (org == DOSE:::get_organism(OrgDb) &&
         keytype == kt &&
         exists("goAnno", envir=GO_Env, inherits=FALSE)) {
-      ## https://github.com/GuangchuangYu/clusterProfiler/issues/182
-      ## && exists("GO2TERM", envir=GO_Env, inherits=FALSE)){
-      
       use_cached <- TRUE
     }
   }
-  
   if (use_cached) {
     goAnno <- get("goAnno", envir=GO_Env)
   } else {
@@ -33,28 +24,22 @@ get_GO_data <- function(OrgDb, ont, keytype) {
     kt <- keytypes(OrgDb)
     if (! keytype %in% kt) {
       stop("keytype is not supported...")
-    }
-    
+    }    
     kk <- keys(OrgDb, keytype=keytype)
     goAnno <- suppressMessages(
       AnnotationDbi::select(OrgDb, keys=kk, keytype=keytype,
              columns=c("GOALL", "ONTOLOGYALL")))
-    
-    goAnno <- unique(goAnno[!is.na(goAnno$GOALL), ])
-    
+    goAnno <- unique(goAnno[!is.na(goAnno$GOALL), ]) 
     assign("goAnno", goAnno, envir=GO_Env)
     assign("keytype", keytype, envir=GO_Env)
     assign("organism", DOSE:::get_organism(OrgDb), envir=GO_Env)
   }
-  
   if (ont == "ALL") {
     GO2GENE <- unique(goAnno[, c(2,1)])
   } else {
     GO2GENE <- unique(goAnno[goAnno$ONTOLOGYALL == ont, c(2,1)])
   }
-  
   GO_DATA <- DOSE:::build_Anno(GO2GENE, get_GO2TERM_table())
-  
   goOnt.df <- goAnno[, c("GOALL", "ONTOLOGYALL")] %>% unique
   goOnt <- goOnt.df[,2]
   names(goOnt) <- goOnt.df[,1]
@@ -69,12 +54,10 @@ get_GO_Env <- function () {
   }
   get(".GO_clusterProfiler_Env", envir = .GlobalEnv)
 }
-
 get_GO2TERM_table <- function() {
   GOTERM.df <- get_GOTERM()
   GOTERM.df[, c("go_id", "Term")] %>% unique
 }
-
 get_GOTERM <- function() {
   pos <- 1
   envir <- as.environment(pos)
@@ -90,12 +73,8 @@ get_GOTERM <- function() {
   }
   return(GOTERM.df)
 }
-
 GO_DATA <- get_GO_data("org.Hs.eg.db", "ALL", "SYMBOL")
-
-
 findGO <- function(pattern, method = "key"){
-
     if(!exists("GO_DATA"))
         load("GO_DATA.RData")
     if(method == "key"){
@@ -103,18 +82,14 @@ findGO <- function(pattern, method = "key"){
     } else if(method == "gene"){
         pathways = cbind(GO_DATA$PATHID2NAME[GO_DATA$EXTID2PATHID[[pattern]]])
     }
-
     colnames(pathways) = "pathway"
-
     if(length(pathways) == 0){
         cat("No results!\n")
     } else{
         return(pathways)
     }
 }
-
 getGO <- function(ID){
-
     if(!exists("GO_DATA"))
         load("GO_DATA.RData")
     allNAME = names(GO_DATA$PATHID2EXTID)
@@ -127,12 +102,30 @@ getGO <- function(ID){
     }
 }
 
-#load("GO_DATA.RData") # 载入数据 GO_DATA
-#findGO("insulin") # 寻找 含有指定关键字的 pathway name 的 pathway
-#findGO("INS", method = "gene") # 寻找含有指定基因名的 pathway
-#getGO("GO:0008152") # 获取指定 GO ID 的 gene set
-#$`insulin metabolic process`
-#[1] "CEACAM1" "CPE"     "ERN1"    "IDE"     "PCSK2"   "ERO1B"
+# the related biological process:
 gene_related_Meta<-getGO("GO:0008152")
 gene_related_cellcycle<-getGO("GO:0007049")
 
+# gene type barplot 
+gene_type<-as.data.frame(table(metabolism_data$level2_pathway_id))
+pdf("./version3/metabolism_gene_type_barplot.pdf",width=10,height=6)
+ggplot(gene_type, aes(x=as.factor(Var1), y=Freq ,fill=as.factor(Var1))) + 
+  geom_bar( stat = "identity", width = 0.6) +
+  xlab("Classification of metabolic genes") +
+  ylab("# of genes") + 
+  scale_fill_brewer(palette = "Set3")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90,vjust = 0.5,hjust = 0.5));
+dev.off()
+
+gene_type2<-data.frame(type=c("Transcription factors","Metabolic genes","Enzymes"),
+  gene_number=c(1351,1670,1484))
+pdf("./version3/metabolism_gene_type2_barplot.pdf",width=5,height=6)
+ggplot(gene_type2, aes(x=as.factor(type), y=gene_number ,fill=as.factor(type))) + 
+  geom_bar( stat = "identity", width = 0.6) +
+  xlab("Classification of genes") +
+  ylab("# of genes") + 
+  scale_fill_brewer(palette = "Set2")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90,vjust = 0.5,hjust = 0.5));
+dev.off()

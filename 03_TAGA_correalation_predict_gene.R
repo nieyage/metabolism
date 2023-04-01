@@ -1,5 +1,4 @@
-#####TAGA data correalation predict gene related to regenaration 
-
+#####TCGA data correalation predict gene related to regenaration 
 library(gelnet)
 library(dplyr)
 library(biomaRt)
