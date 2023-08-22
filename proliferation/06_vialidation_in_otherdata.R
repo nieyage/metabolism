@@ -152,7 +152,7 @@ dev.off()
 dev.off()
 dittoHeatmap(scRNA_usful, genes%in% rownames(scRNA_usful), annot.by = c("cell_states", "age_group"), order.by = "cell_states")
 dittoHeatmap(scRNA_usful, genes%in% rownames(scRNA_usful), annot.by = c("cell_states", "age_group"), order.by = "cell_states")
-EEEQQQWERTYUIOP[]]\
+
 ensembl <- biomaRt::useMart( "ENSEMBL_MART_ENSEMBL", host="www.ensembl.org", dataset="hsapiens_gene_ensembl" )
 g2m.genes<-cc.genes$g2m.genes
 gene.df <- bitr(validation_gene, fromType = c("ALIAS"),

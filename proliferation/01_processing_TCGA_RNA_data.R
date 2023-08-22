@@ -69,7 +69,7 @@ gene_CV<-apply(training_set_data, 1, cal_cv)
 data<-as.data.frame(gene_CV);
 range(data$gene_CV)
 library(ggplot2)
-pdf("./gene_cv.pdf",width=10,height=4)
+pdf("./01_TCGAdatasets/gene_cv.pdf",width=10,height=4)
 ggplot(data, aes(x=gene_CV)) + xlab("gene_CV")+
               geom_density(alpha=.25) + theme_classic() 
 dev.off()
@@ -82,9 +82,9 @@ gene_hCV<-data[data$gene_CV>1,2]
 training_set_data<-training_set_data[which(rownames(training_set_data)%in%gene_hCV),]
 cor_data<-cor(t(training_set_data));
 
-write.csv(cor_data,"highCV_gene_correalation.csv")
-write.csv(validation_data,"validation_data.csv")
-write.csv(training_set_data,"training_set_data.csv")
-write.csv(test_set_data,"test_set_data.csv")
-write.csv(Tcga_Anno,"Tcga_Anno_info.csv")
+write.csv(cor_data,"./01_TCGAdatasets/highCV_gene_correalation.csv")
+write.csv(validation_data,"./01_TCGAdatasets/validation_data.csv")
+write.csv(training_set_data,"./01_TCGAdatasets/training_set_data.csv")
+write.csv(test_set_data,"./01_TCGAdatasets/test_set_data.csv")
+write.csv(Tcga_Anno,"./01_TCGAdatasets/Tcga_Anno_info.csv")
 
